@@ -10,3 +10,6 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# The site's APK is a build product: CI rebuilds it from the commit it deploys.
+/site/public/*.apk

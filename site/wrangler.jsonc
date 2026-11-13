@@ -1,0 +1,12 @@
+{
+  // The Freebuff deployment uses deploy.json; this file is what plain
+  // `npx wrangler deploy` reads, including from .github/workflows/build.yml.
+  "$schema": "https://unpkg.com/wrangler/config-schema.json",
+  "name": "liquid-glass",
+  "main": "worker.js",
+  "compatibility_date": "2025-06-01",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS"
+  }
+}

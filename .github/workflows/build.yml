@@ -1,0 +1,129 @@
+name: Build APK and deploy the download page
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+env:
+  GRADLE_VERSION: "8.9"
+  BUILD_TOOLS: "35.0.0"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install SDK packages
+        run: sdkmanager --install "platforms;android-35" "build-tools;$BUILD_TOOLS"
+
+      # gradle-wrapper.jar is a binary and is not committed; recreate it.
+      - name: Generate the Gradle wrapper
+        run: gradle wrapper --gradle-version "$GRADLE_VERSION" --distribution-type bin
+
+      - name: Build release APK
+        run: |
+          set -euo pipefail
+          chmod +x gradlew
+          ./gradlew :app:assembleRelease --no-daemon --console=plain
+
+      - name: Sign and verify
+        id: sign
+        env:
+          KEYSTORE_B64: ${{ secrets.SIGNING_KEYSTORE_BASE64 }}
+          STORE_PASS: ${{ secrets.SIGNING_STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          KEY_PASS: ${{ secrets.SIGNING_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          BT="$ANDROID_HOME/build-tools/$BUILD_TOOLS"
+          UNSIGNED="app/build/outputs/apk/release/app-release-unsigned.apk"
+
+          if [ -n "${KEYSTORE_B64:-}" ]; then
+            printf '%s' "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/release.keystore"
+            "$BT/apksigner" sign --ks "$RUNNER_TEMP/release.keystore" \
+              --ks-pass "pass:${STORE_PASS}" \
+              --ks-key-alias "${KEY_ALIAS}" \
+              --key-pass "pass:${KEY_PASS}" \
+              --out liquid-glass-launcher.apk "$UNSIGNED"
+            echo "distributable=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning title=Throwaway signing key::SIGNING_KEYSTORE_BASE64 is not set, so this APK is signed with a key generated on the runner. It installs, but it cannot upgrade a build signed elsewhere, and it will not be attached to a release."
+            keytool -genkeypair -keystore "$RUNNER_TEMP/throwaway.keystore" \
+              -storepass android -keypass android -alias glass \
+              -keyalg RSA -keysize 2048 -validity 3650 \
+              -dname "CN=Liquid Glass CI, O=Local" > /dev/null 2>&1
+            "$BT/apksigner" sign --ks "$RUNNER_TEMP/throwaway.keystore" \
+              --ks-pass pass:android --key-pass pass:android --ks-key-alias glass \
+              --out liquid-glass-launcher.apk "$UNSIGNED"
+            echo "distributable=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          "$BT/apksigner" verify --verbose liquid-glass-launcher.apk
+          test -s liquid-glass-launcher.apk
+          ls -l liquid-glass-launcher.apk
+
+      # The page reads these two files at runtime, so this is the whole publish step.
+      - name: Stage the site
+        run: |
+          set -euo pipefail
+          cp liquid-glass-launcher.apk site/public/liquid-glass-launcher.apk
+          ( cd site/public && sha256sum liquid-glass-launcher.apk > SHA256SUMS.txt )
+          cat site/public/SHA256SUMS.txt
+
+      - name: Upload the APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: liquid-glass-launcher-apk
+          path: liquid-glass-launcher.apk
+          if-no-files-found: error
+
+      - name: Upload the deployable site
+        uses: actions/upload-artifact@v4
+        with:
+          name: liquid-glass-site
+          path: site/
+          if-no-files-found: error
+
+      - name: Attach the APK to the release
+        if: startsWith(github.ref, 'refs/tags/v') && steps.sign.outputs.distributable == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload "$GITHUB_REF_NAME" liquid-glass-launcher.apk --clobber \
+            || gh release create "$GITHUB_REF_NAME" liquid-glass-launcher.apk \
+                 --title "$GITHUB_REF_NAME" \
+                 --notes "Built from ${GITHUB_SHA} by the build workflow."
+
+      - name: Deploy to Cloudflare Workers
+        if: github.ref == 'refs/heads/main' && secrets.CLOUDFLARE_API_TOKEN != ''
+        working-directory: site
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx --yes wrangler@4 deploy
+
+      - name: Report that the page was only packaged
+        if: github.ref == 'refs/heads/main' && secrets.CLOUDFLARE_API_TOKEN == ''
+        run: |
+          echo "::notice title=Site not deployed::CLOUDFLARE_API_TOKEN is not set. Download the liquid-glass-site artifact and deploy it with 'npx wrangler@4 deploy' from site/, or upload that folder to Freebuff Sites using site/deploy.json."

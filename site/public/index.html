@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Liquid Glass for Android — 31 KB</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; display: grid; place-items: center;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #06060b; color: #fff; padding: 24px;
+  }
+  .bg {
+    position: fixed; inset: -20%; z-index: -1; filter: blur(90px); opacity: .55;
+    background:
+      radial-gradient(40% 35% at 20% 15%, #3b2a87, transparent 70%),
+      radial-gradient(35% 30% at 85% 25%, #1c5e90, transparent 70%),
+      radial-gradient(45% 40% at 55% 95%, #8a2b63, transparent 70%);
+  }
+  .card {
+    width: 100%; max-width: 430px; padding: 26px; border-radius: 34px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.22);
+    box-shadow: 0 30px 70px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.35);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+  }
+  h1 { font-size: 21px; margin: 0 0 4px; letter-spacing: -.3px; }
+  p { color: rgba(255,255,255,.7); font-size: 13px; line-height: 1.5; margin: 0 0 18px; }
+  p strong { color: #fff; font-weight: 600; }
+  a.button {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    text-decoration: none; color: #0b0b12; font-weight: 600; font-size: 15px;
+    background: rgba(255,255,255,.92); border-radius: 999px; padding: 15px 20px;
+    box-shadow: 0 10px 24px rgba(0,0,0,.35);
+  }
+  a.button:active { transform: scale(.985); }
+  .meta {
+    display: flex; justify-content: space-between; margin-top: 16px;
+    font-size: 11px; color: rgba(255,255,255,.55);
+  }
+  code {
+    font-size: 10px; word-break: break-all; color: rgba(255,255,255,.5);
+    display: block; margin-top: 12px;
+  }
+  ol { color: rgba(255,255,255,.75); font-size: 12.5px; line-height: 1.6; padding-left: 18px; margin: 16px 0 0; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 18px; padding: 0; list-style: none; }
+  .tags li {
+    font-size: 10.5px; letter-spacing: .02em; padding: 5px 9px; border-radius: 999px;
+    background: rgba(255,255,255,.09); border: 1px solid rgba(255,255,255,.14);
+    color: rgba(255,255,255,.72);
+  }
+  .foot { margin: 18px 0 0; font-size: 11px; color: rgba(255,255,255,.45); }
+  .foot a { color: rgba(255,255,255,.75); }
+</style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="card">
+    <h1>Liquid Glass</h1>
+    <p>iOS 26 style home screen for Android · <strong id="apk-kb">31 KB</strong> · Android 8.0+</p>
+
+    <ul class="tags">
+      <li>Zero dependencies</li>
+      <li>No Compose</li>
+      <li>4&times;2 widget</li>
+      <li>0 services</li>
+    </ul>
+
+    <a class="button" href="liquid-glass-launcher.apk" download="liquid-glass-launcher.apk">Download APK</a>
+
+    <div class="meta"><span>dev.glass.launcher · v1.0</span><span id="apk-bytes">41,937 bytes</span></div>
+    <code id="apk-sha">sha256 2ec2610811747de1ab59de3bcf9bf9cc6686e5dc5e302544999bedfc8e81f639</code>
+
+    <ol>
+      <li>Open the APK on the phone and allow install from this source.</li>
+      <li>Settings → Apps → Default apps → Home app → Liquid Glass.</li>
+      <li>Long-press an empty spot → Widgets → Liquid Glass Clock.</li>
+    </ol>
+
+    <p class="foot">
+      Pure <code style="display:inline">android.*</code> Kotlin: a 4-column glass grid, a frosted dock,
+      a swipe-up app drawer with live search, three live glass sliders and a RemoteViews clock.
+      <a href="https://github.com/ThatAerospaceandTechGuy/liquid-glass-android">Source on GitHub</a>.
+    </p>
+  </main>
+
+  <script>
+    // The page never states a size or a hash it has not been told by the files
+    // actually being served, so a new build cannot leave it lying. The values
+    // above are only what the first paint shows if these requests fail.
+    (function () {
+      var get = function (id) { return document.getElementById(id); };
+
+      fetch("liquid-glass-launcher.apk", { method: "HEAD" })
+        .then(function (r) {
+          var bytes = parseInt(r.headers.get("content-length"), 10);
+          if (!bytes) return;
+          var kb = Math.round(bytes / 1024);
+          get("apk-kb").textContent = kb + " KB";
+          get("apk-bytes").textContent = bytes.toLocaleString("en-US") + " bytes";
+          document.title = "Liquid Glass for Android \u2014 " + kb + " KB";
+        })
+        .catch(function () {});
+
+      fetch("SHA256SUMS.txt", { cache: "no-cache" })
+        .then(function (r) { return r.text(); })
+        .then(function (text) {
+          var m = /[0-9a-f]{64}/i.exec(text);
+          if (m) get("apk-sha").textContent = "sha256 " + m[0].toLowerCase();
+        })
+        .catch(function () {});
+    })();
+  </script>
+</body>
+</html>
