@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Download Liquid Glass</title>
+<title>Liquid Glass for Android — 31 KB</title>
 <style>
   :root { color-scheme: dark; }
   * { box-sizing: border-box; }
@@ -20,7 +20,7 @@
       radial-gradient(45% 40% at 55% 95%, #8a2b63, transparent 70%);
   }
   .card {
-    width: 100%; max-width: 420px; padding: 26px; border-radius: 34px;
+    width: 100%; max-width: 430px; padding: 26px; border-radius: 34px;
     background: rgba(255,255,255,.08);
     border: 1px solid rgba(255,255,255,.22);
     box-shadow: 0 30px 70px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.35);
@@ -29,6 +29,7 @@
   }
   h1 { font-size: 21px; margin: 0 0 4px; letter-spacing: -.3px; }
   p { color: rgba(255,255,255,.7); font-size: 13px; line-height: 1.5; margin: 0 0 18px; }
+  p strong { color: #fff; font-weight: 600; }
   a.button {
     display: flex; align-items: center; justify-content: center; gap: 10px;
     text-decoration: none; color: #0b0b12; font-weight: 600; font-size: 15px;
@@ -36,23 +37,54 @@
     box-shadow: 0 10px 24px rgba(0,0,0,.35);
   }
   a.button:active { transform: scale(.985); }
-  .meta { display: flex; justify-content: space-between; margin-top: 16px; font-size: 11px; color: rgba(255,255,255,.55); }
-  code { font-size: 10px; word-break: break-all; color: rgba(255,255,255,.5); display: block; margin-top: 12px; }
+  .meta {
+    display: flex; justify-content: space-between; margin-top: 16px;
+    font-size: 11px; color: rgba(255,255,255,.55);
+  }
+  code {
+    font-size: 10px; word-break: break-all; color: rgba(255,255,255,.5);
+    display: block; margin-top: 12px;
+  }
   ol { color: rgba(255,255,255,.75); font-size: 12.5px; line-height: 1.6; padding-left: 18px; margin: 16px 0 0; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 18px; padding: 0; list-style: none; }
+  .tags li {
+    font-size: 10.5px; letter-spacing: .02em; padding: 5px 9px; border-radius: 999px;
+    background: rgba(255,255,255,.09); border: 1px solid rgba(255,255,255,.14);
+    color: rgba(255,255,255,.72);
+  }
+  .foot { margin: 18px 0 0; font-size: 11px; color: rgba(255,255,255,.45); }
+  .foot a { color: rgba(255,255,255,.75); }
 </style>
 </head>
 <body>
   <div class="bg"></div>
   <main class="card">
     <h1>Liquid Glass</h1>
-    <p>iOS 26 style home screen for Android · 1.1 MB · Android 8.0+</p>
-    <a class="button" href="LiquidGlass-1.0.apk" download="LiquidGlass-1.0.apk">Download APK</a>
-    <div class="meta"><span>app.liquidglass · v1.0</span><span>minSdk 26 → 34</span></div>
-    <code>sha256 f5fcef9a147c30d17143925776c61e6bec48ea69cc033f3aeb9e3ed6b480be28</code>
+    <p>iOS 26 style home screen for Android · <strong>31 KB</strong> · Android 8.0+</p>
+
+    <ul class="tags">
+      <li>Zero dependencies</li>
+      <li>No Compose</li>
+      <li>4&times;2 widget</li>
+      <li>0 services</li>
+    </ul>
+
+    <a class="button" href="https://site-cfec98903e8c4284b1bd2e88156d3e42.freebuff.page/liquid-glass-launcher.apk" download="liquid-glass-launcher.apk">Download APK</a>
+
+    <div class="meta"><span>dev.glass.launcher · v1.0</span><span>minSdk 26 → 35</span></div>
+    <code>sha256 26957141c726ee4a4d27d5f48a7e842bce598ee60e8fb1b74da6e3de9fe9d26a</code>
+
     <ol>
-      <li>Open the APK on the phone, allow install from this source.</li>
+      <li>Open the APK on the phone and allow install from this source.</li>
       <li>Settings → Apps → Default apps → Home app → Liquid Glass.</li>
+      <li>Long-press an empty spot → Widgets → Liquid Glass Clock.</li>
     </ol>
+
+    <p class="foot">
+      Pure <code style="display:inline">android.*</code> Kotlin: a 4-column glass grid, a frosted dock,
+      a swipe-up app drawer with live search, three live glass sliders and a RemoteViews clock.
+      <a href="https://github.com/ThatAerospaceandTechGuy/liquid-glass-android">Source on GitHub</a>.
+    </p>
   </main>
 </body>
 </html>
