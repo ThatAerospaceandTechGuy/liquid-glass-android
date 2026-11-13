@@ -4,8 +4,10 @@ A home-screen launcher (`CATEGORY_HOME`) plus a 4x2 clock/battery home-screen wi
 written only against the `android.*` platform SDK. No AndroidX, no Compose, no
 Material, no image loader, no coroutine runtime, no third-party code of any kind.
 
-**Measured:** `app-release-unsigned.apk` = **32,224 bytes (31 KB)**; signed = 41,937
+**Measured:** `app-release-unsigned.apk` = **32,284 bytes (31 KB)**; signed = 41,937
 bytes. `classes.dex` = 47 KB, `resources.arsc` = 3.3 KB. Budget was < 500 KB.
+
+Download: **https://site-cfec98903e8c4284b1bd2e88156d3e42.freebuff.page**
 
 ---
 
