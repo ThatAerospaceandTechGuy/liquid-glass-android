@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Download Liquid Glass</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; display: grid; place-items: center;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #06060b; color: #fff; padding: 24px;
+  }
+  .bg {
+    position: fixed; inset: -20%; z-index: -1; filter: blur(90px); opacity: .55;
+    background:
+      radial-gradient(40% 35% at 20% 15%, #3b2a87, transparent 70%),
+      radial-gradient(35% 30% at 85% 25%, #1c5e90, transparent 70%),
+      radial-gradient(45% 40% at 55% 95%, #8a2b63, transparent 70%);
+  }
+  .card {
+    width: 100%; max-width: 420px; padding: 26px; border-radius: 34px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.22);
+    box-shadow: 0 30px 70px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.35);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+  }
+  h1 { font-size: 21px; margin: 0 0 4px; letter-spacing: -.3px; }
+  p { color: rgba(255,255,255,.7); font-size: 13px; line-height: 1.5; margin: 0 0 18px; }
+  a.button {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    text-decoration: none; color: #0b0b12; font-weight: 600; font-size: 15px;
+    background: rgba(255,255,255,.92); border-radius: 999px; padding: 15px 20px;
+    box-shadow: 0 10px 24px rgba(0,0,0,.35);
+  }
+  a.button:active { transform: scale(.985); }
+  .meta { display: flex; justify-content: space-between; margin-top: 16px; font-size: 11px; color: rgba(255,255,255,.55); }
+  code { font-size: 10px; word-break: break-all; color: rgba(255,255,255,.5); display: block; margin-top: 12px; }
+  ol { color: rgba(255,255,255,.75); font-size: 12.5px; line-height: 1.6; padding-left: 18px; margin: 16px 0 0; }
+</style>
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="card">
+    <h1>Liquid Glass</h1>
+    <p>iOS 26 style home screen for Android · 1.1 MB · Android 8.0+</p>
+    <a class="button" href="LiquidGlass-1.0.apk" download="LiquidGlass-1.0.apk">Download APK</a>
+    <div class="meta"><span>app.liquidglass · v1.0</span><span>minSdk 26 → 34</span></div>
+    <code>sha256 f5fcef9a147c30d17143925776c61e6bec48ea69cc033f3aeb9e3ed6b480be28</code>
+    <ol>
+      <li>Open the APK on the phone, allow install from this source.</li>
+      <li>Settings → Apps → Default apps → Home app → Liquid Glass.</li>
+    </ol>
+  </main>
+</body>
+</html>
