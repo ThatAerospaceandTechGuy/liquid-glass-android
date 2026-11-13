@@ -1,15 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.LiquidGlass" parent="@android:style/Theme.Material.NoActionBar">
-        <item name="android:windowBackground">#FF07070C</item>
-        <item name="android:colorBackground">#FF07070C</item>
+
+    <style name="GlassHome" parent="@android:style/Theme.Material.NoActionBar">
+        <!-- The wallpaper is drawn by the system behind our fully transparent window. -->
+        <item name="android:windowShowWallpaper">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackground">@android:color/transparent</item>
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarDividerColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowLightNavigationBar">false</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
-        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionModeOverlay">true</item>
     </style>
+
+    <style name="GlassLabel">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:textColor">#CCFFFFFF</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:letterSpacing">0.02</item>
+    </style>
+
+    <style name="GlassSeek">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:paddingEnd">0dp</item>
+        <item name="android:progressTint">#FFFFFFFF</item>
+        <item name="android:progressBackgroundTint">#3DFFFFFF</item>
+        <item name="android:thumbTint">#FFFFFFFF</item>
+    </style>
+
 </resources>

@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Liquid Glass</string>
+    <string name="widget_label">Liquid Glass Clock</string>
+    <string name="widget_description">Frosted glass clock and battery for any launcher.</string>
+    <string name="widget_preview_time">9:41</string>
+    <string name="widget_preview_date">Wed 4 Jun</string>
+    <string name="widget_preview_battery">87%</string>
+    <string name="settings_title">Liquid Glass</string>
+    <string name="settings_blur">Glass blur radius</string>
+    <string name="settings_tint">Glass tint opacity</string>
+    <string name="settings_corner">Icon corner radius</string>
+    <string name="settings_hint">Long-press the home screen to reopen this panel.</string>
+    <string name="search_hint">Search apps</string>
 </resources>

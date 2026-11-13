@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <!-- Re-arm the widget minute ticker after a reboot. -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
-    <uses-feature
-        android:name="android.hardware.camera.flash"
-        android:required="false" />
-
-    <!-- Needed on Android 11+ to list launchable apps for the home screen grid. -->
+    <!-- Package visibility (API 30+): see every launcher activity without QUERY_ALL_PACKAGES. -->
     <queries>
         <intent>
             <action android:name="android.intent.action.MAIN" />
@@ -18,27 +14,56 @@
 
     <application
         android:allowBackup="false"
+        android:enableOnBackInvokedCallback="false"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="false"
         android:supportsRtl="true"
-        android:theme="@style/Theme.LiquidGlass">
+        android:theme="@style/GlassHome">
 
+        <!-- The launcher itself. CATEGORY_HOME + CATEGORY_DEFAULT is all a home app needs. -->
         <activity
             android:name=".MainActivity"
-            android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout|smallestScreenSize|uiMode|density"
+            android:clearTaskOnLaunch="true"
+            android:configChanges="density|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
             android:excludeFromRecents="true"
             android:exported="true"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
+            android:resizeableActivity="true"
             android:stateNotNeeded="true"
-            android:theme="@style/Theme.LiquidGlass"
+            android:theme="@style/GlassHome"
             android:windowSoftInputMode="adjustResize">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <!-- Also listed in the app drawer so the user can find it again. -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- 4x2 clock + battery widget. Also owns the once-a-minute tick and the
+             boot broadcast, so the app needs no services at all. -->
+        <receiver
+            android:name=".GlassWidgetProvider"
+            android:exported="true"
+            android:label="@string/widget_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/glass_widget_info" />
+        </receiver>
     </application>
+
 </manifest>

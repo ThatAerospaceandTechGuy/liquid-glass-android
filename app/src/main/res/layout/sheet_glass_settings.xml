@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingStart="22dp"
+    android:paddingTop="10dp"
+    android:paddingEnd="22dp"
+    android:paddingBottom="18dp">
+
+    <View
+        android:layout_width="38dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/sheet_handle" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
+        android:letterSpacing="0.01"
+        android:text="@string/settings_title"
+        android:textColor="#FFFFFFFF"
+        android:textSize="17sp" />
+
+    <TextView
+        style="@style/GlassLabel"
+        android:text="@string/settings_blur" />
+
+    <SeekBar
+        android:id="@+id/seek_blur"
+        style="@style/GlassSeek" />
+
+    <TextView
+        style="@style/GlassLabel"
+        android:text="@string/settings_tint" />
+
+    <SeekBar
+        android:id="@+id/seek_tint"
+        style="@style/GlassSeek" />
+
+    <TextView
+        style="@style/GlassLabel"
+        android:text="@string/settings_corner" />
+
+    <SeekBar
+        android:id="@+id/seek_corner"
+        style="@style/GlassSeek" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/settings_hint"
+        android:textColor="#8AFFFFFF"
+        android:textSize="11sp" />
+
+</LinearLayout>
