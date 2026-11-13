@@ -1,31 +1,35 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
-    namespace = "app.liquidglass"
-    compileSdk = 34
+    namespace = "dev.glass.launcher"
+    compileSdk = 35
 
     defaultConfig {
-        applicationId = "app.liquidglass"
+        applicationId = "dev.glass.launcher"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
+        // We ship no translations, so strip every other locale table from resources.
+        resourceConfigurations += listOf("en")
     }
 
     buildTypes {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
+            isDebuggable = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            // Sideload build: signed with the local debug key so it installs without extra setup.
-            signingConfig = signingConfigs.getByName("debug")
+        }
+        debug {
+            isMinifyEnabled = false
+            isShrinkResources = false
         }
     }
 
@@ -36,35 +40,44 @@ android {
 
     kotlinOptions {
         jvmTarget = "17"
+        // No reflection-heavy stdlib helpers, please.
+        freeCompilerArgs += listOf("-Xno-param-assertions", "-Xno-call-assertions")
     }
 
     buildFeatures {
-        compose = true
+        buildConfig = false
+        viewBinding = false
+        aidl = false
+        renderScript = false
+        shaders = false
+        resValues = false
     }
 
-    lint {
-        checkReleaseBuilds = false
-        abortOnError = false
+    // Drop the dependency metadata block Play inserts; it is a few KB of noise here.
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
     }
 
     packaging {
-        resources.excludes += setOf(
-            "/META-INF/{AL2.0,LGPL2.1}",
-            "META-INF/LICENSE*",
-            "META-INF/NOTICE*"
-        )
+        resources {
+            excludes += setOf(
+                "/META-INF/*.kotlin_module",
+                "/META-INF/*.version",
+                "/META-INF/MANIFEST.MF",
+                "/META-INF/*.RSA",
+                "/META-INF/*.SF",
+                "/META-INF/version-control-info.textproto",
+                // Kotlin metadata is only needed by kotlin-reflect, which this app
+                // does not ship. ~30 KB of dead weight removed from the APK.
+                "/kotlin/**",
+                "/kotlin-tooling-metadata.json",
+                "/DebugProbesKt.bin"
+            )
+        }
     }
 }
 
+// Zero. Third-party. Dependencies.
 dependencies {
-    implementation(platform("androidx.compose:compose-bom:2024.09.03"))
-    implementation("androidx.core:core-ktx:1.13.1")
-    implementation("androidx.activity:activity-compose:1.9.2")
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.foundation:foundation")
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.material:material-icons-extended")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.5")
 }

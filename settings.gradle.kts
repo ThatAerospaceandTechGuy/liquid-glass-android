@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "LiquidGlass"
+rootProject.name = "LiquidGlassLauncher"
 include(":app")
