@@ -20,32 +20,53 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # Pinned on purpose: ubuntu-latest moved to 26.04, and the Android SDK
+    # layout moves with the image.
+    runs-on: ubuntu-24.04
     steps:
       - name: Check out
         uses: actions/checkout@v4
 
       - name: JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "17"
 
-      - name: Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install SDK packages
-        run: sdkmanager --install "platforms;android-35" "build-tools;$BUILD_TOOLS"
-
-      # gradle-wrapper.jar is a binary and is not committed; recreate it.
-      - name: Generate the Gradle wrapper
-        run: gradle wrapper --gradle-version "$GRADLE_VERSION" --distribution-type bin
-
-      - name: Build release APK
+      # The runner image already ships an SDK; only these packages are missing.
+      # android-actions/setup-android@v3 is not used: it insists on one specific
+      # cmdline-tools build and then stops at the interactive licence prompt.
+      - name: Install Android SDK packages
         run: |
           set -euo pipefail
+          SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+          echo "ANDROID_HOME=$SDK" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$SDK" >> "$GITHUB_ENV"
+          SDKMGR="$SDK/cmdline-tools/latest/bin/sdkmanager"
+          if [ ! -x "$SDKMGR" ]; then
+            SDKMGR="$(find "$SDK/cmdline-tools" -name sdkmanager -type f -print -quit)"
+          fi
+          echo "sdkmanager: $SDKMGR"
+          yes | "$SDKMGR" --licenses > /dev/null 2>&1 || true
+          "$SDKMGR" --install "platforms;android-35" "build-tools;$BUILD_TOOLS" "platform-tools"
+          echo "$SDK/build-tools/$BUILD_TOOLS" >> "$GITHUB_PATH"
+
+      - name: Generate the Gradle wrapper
+        run: |
+          set -euo pipefail
+          # gradle-wrapper.jar is a binary and is not committed; recreate it.
+          GRADLE="$(command -v gradle || true)"
+          if [ -z "$GRADLE" ]; then
+            curl -fsSL "https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip" -o "$RUNNER_TEMP/gradle.zip"
+            unzip -q "$RUNNER_TEMP/gradle.zip" -d "$RUNNER_TEMP"
+            GRADLE="$RUNNER_TEMP/gradle-$GRADLE_VERSION/bin/gradle"
+          fi
+          "$GRADLE" --version | head -3
+          "$GRADLE" wrapper --gradle-version "$GRADLE_VERSION" --distribution-type bin
           chmod +x gradlew
-          ./gradlew :app:assembleRelease --no-daemon --console=plain
+
+      - name: Build release APK
+        run: ./gradlew :app:assembleRelease --no-daemon --console=plain
 
       - name: Sign and verify
         id: sign
